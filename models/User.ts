@@ -1,4 +1,7 @@
 // models/User.ts
+// MongoDB User Model (Commented out for Vercel deployment without MongoDB)
+
+/*
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
@@ -16,5 +19,8 @@ const UserSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-// Avoid model overwrite on hot-reload
 export default mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+*/
+
+const User = null as any;
+export default User;

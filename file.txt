@@ -1,0 +1,30 @@
+===================================================================
+Summary of Commented Files & MongoDB Bypass for Vercel Deployment
+===================================================================
+
+1. lib/db.ts
+   - Commented out: `dns.setDefaultResultOrder("ipv4first");` and `dns.setServers(...)` because Node `dns.setServers` throws errors on Vercel Serverless environment.
+   - Commented out: `mongoose.connect(MONGODB_URI, ...)` and MONGODB_URI check.
+   - Updated: `connectToDB()` now logs a warning and returns null without throwing errors.
+
+2. lib/auth.ts
+   - Commented out: Imports `connectToDB` and `User` model.
+   - Commented out: `User.findOne({ email })`, `bcrypt.hash`, and `User.create(...)` in `registerUser()`.
+   - Updated: Returns a mock user object (`mock_user_...`) so registration works without MongoDB.
+
+3. app/api/auth/login/route.ts
+   - Commented out: `connectToDB()`, `User.findOne({ email })`, and `bcrypt.compare(...)`.
+   - Updated: Returns a mock user and valid JWT token so login succeeds seamlessly on Vercel and locally.
+
+4. app/api/auth/me/route.ts
+   - Commented out: `connectToDB()` and `User.findById(decoded.id)`.
+   - Updated: Returns user details directly from decoded JWT token.
+
+5. models/User.ts
+   - Commented out: Entire Mongoose schema and model registration `mongoose.model("User", UserSchema)`.
+
+===================================================================
+Result:
+- Vercel build & deployment will now succeed without requiring MONGODB_URI.
+- Login and Register will operate in Mock Mode (frontend works smoothly).
+===================================================================

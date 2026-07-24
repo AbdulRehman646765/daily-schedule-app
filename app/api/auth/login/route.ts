@@ -1,16 +1,17 @@
 // app/api/auth/login/route.ts
 import { NextResponse } from "next/server";
-import User from "@/models/User";
-import connectToDB from "@/lib/db";
-import bcrypt from "bcryptjs";
+// import User from "@/models/User";
+// import connectToDB from "@/lib/db";
+// import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   try {
-    await connectToDB();
+    // await connectToDB();
     const body = await req.json();
-    const { email, password } = body;
+    const { email } = body;
 
+    /*
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
@@ -20,18 +21,26 @@ export async function POST(req: Request) {
     if (!isPasswordValid) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
+    */
+
+    // Mock Login response for Vercel deployment without MongoDB
+    const mockUser = {
+      id: "user_mock_123",
+      name: email ? email.split("@")[0] : "User",
+      email: email || "user@example.com",
+    };
 
     // JWT Token
     const token = jwt.sign(
-      { id: user._id, email: user.email, name: user.name },
+      { id: mockUser.id, email: mockUser.email, name: mockUser.name },
       process.env.JWT_SECRET || "default_secret",
       { expiresIn: "7d" }
     );
 
     return NextResponse.json(
       {
-        message: "Login successful",
-        user: { id: user._id, name: user.name, email: user.email },
+        message: "Login successful (Mock Mode)",
+        user: mockUser,
         token,
       },
       { status: 200 }
